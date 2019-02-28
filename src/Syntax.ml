@@ -41,7 +41,28 @@ module Expr =
        Takes a state and an expression, and returns the value of the expression in 
        the given state.
     *)
-    let eval _ = failwith "Not implemented yet"
+    let to_int b = if b then 1 else 0
+let to_bool i = i != 0
+
+let eval_operator operator = match operator with
+    | "+"  -> ( + )
+    | "-"  -> ( - )
+    | "*"  -> ( * )
+    | "/"  -> ( / )
+    | "%"  -> ( mod )
+    | "<"  -> fun left right -> to_int (( < ) left right)
+    | "<=" -> fun left right -> to_int (( <= ) left right)
+    | ">"  -> fun left right -> to_int (( > ) left right)
+    | ">=" -> fun left right -> to_int (( >= ) left right)
+    | "==" -> fun left right -> to_int (( == ) left right)
+    | "!=" -> fun left right -> to_int (( != ) left right)
+    | "!!" -> fun left right -> to_int (( || ) (to_bool left) (to_bool right))
+    | "&&" -> fun left right -> to_int (( && ) (to_bool left) (to_bool right))
+    
+let rec eval state expr = match expr with
+    | Const value                   -> value
+    | Var name                      -> state name
+    | Binop(operator, left, right) -> (eval_operator operator) (eval state left) (eval state right);;
 
   end
                     
@@ -65,7 +86,14 @@ module Stmt =
 
        Takes a configuration and a statement, and returns another configuration
     *)
-    let eval _ = failwith "Not implemented yet"
+    let rec eval config statement = 
+	let (state, input, output) = config in
+	match statement with
+		| Read value -> (match input with
+			| head::tail -> (Expr.update value head state, tail, output))
+		| Write expr -> (state, input, output @ [Expr.eval state expr])
+		| Assign (value, expr) -> (Expr.update value (Expr.eval state expr) state, input, output)
+		| Seq (statement, statement_) -> eval (eval config statement) statement_;;
                                                          
   end
 
