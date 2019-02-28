@@ -67,4 +67,4 @@ let rec compile statement =
 		| Syntax.Stmt.Read value -> [READ; ST value]
 		| Syntax.Stmt.Write expr -> (compile_expr expr)@[WRITE]
 		| Syntax.Stmt.Assign (value, expr) -> (compile_expr expr)@[ST value]
-		| Syntax.Stmt.Seq (statement, statement_) -> (compile statement)@(compile statement_);; 
+		| Syntax.Stmt.Seq (statement1, statement2) -> (compile statement1)@(compile statement2);; 
