@@ -56,7 +56,7 @@ let run i p = let (_, (_, _, o)) = eval ([], (Syntax.Expr.empty, i, [])) p in o
    stack machine
  *)
 
-let rec compile_expr expr = match expr with
+let rec compile_expr exp = match exp with
 	| Syntax.Expr.Const const -> [CONST const]
 	| Syntax.Expr.Var var -> [LD var]
 	| Syntax.Expr.Binop (operator, left, right) -> (compile_expr left)@(compile_expr right)@[BINOP operator];;
