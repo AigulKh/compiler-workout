@@ -28,7 +28,7 @@ type config = int list * Syntax.Stmt.config
 	let (state, input, output) = stmt_config in
 	match insn with
 		| BINOP operator -> (match stack with
-		| y::x::tail -> ([(Syntax.Expr.get_operator operator) x y]@tail, stmt_config))
+		| y::x::tail -> ([(Syntax.Expr.operator operator) x y]@tail, stmt_config))
 		| CONST val -> ([val]@stack, stmt_config)                 
 		| READ -> (match input with
 		| head::tail -> ([head]@stack, (state, tail, output)))
@@ -65,4 +65,4 @@ let rec compile statement = match statement with
 	| Syntax.Stmt.Read value -> [READ; ST value]
 	| Syntax.Stmt.Write expr -> (compile_expr expr)@[WRITE]
 	| Syntax.Stmt.Assign (value, expr) -> (compile_expr expr)@[ST value]
-	| Syntax.Stmt.Seq (statement, statement_) -> (compile statement)@(compile statement_);; 
+	| Syntax.Stmt.Seq (st, st_) -> (compile st)@(compile st_);; 
