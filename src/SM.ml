@@ -63,6 +63,6 @@ let rec compile_expr expr = match expr with
 
 let rec compile statement = match statement with
 	| Syntax.Stmt.Read value -> [READ; ST value]
-	| Syntax.Stmt.Write expr -> (compile_expr expr)@[WRITE]
-	| Syntax.Stmt.Assign (value, expr) -> (compile_expr expr)@[ST value]
+	| Syntax.Stmt.Write exp -> (compile_expr exp)@[WRITE]
+	| Syntax.Stmt.Assign (value, exp) -> (compile_expr exp)@[ST value]
 	| Syntax.Stmt.Seq (st, st_) -> (compile st)@(compile st_);; 
