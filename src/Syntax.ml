@@ -59,10 +59,10 @@ let eval_operator operator = match operator with
     | "!!" -> fun left right -> to_int (( || ) (to_bool left) (to_bool right))
     | "&&" -> fun left right -> to_int (( && ) (to_bool left) (to_bool right))
     
-let rec eval s expr = match expr with
-    | Const value                   -> value
-    | Var name                      -> s name
-    | Binop(operator, left, right) -> (eval_operator operator) (eval s left) (eval s right);;
+let rec eval st expr = match expr with
+    | Const value -> value
+    | Var name -> st name
+    | Binop(operator, left, right) -> (eval_operator operator) (eval st left) (eval st right);;
 
   end
                     
@@ -93,7 +93,7 @@ module Stmt =
 			| head::tail -> (Expr.update value head state, tail, output))
 		| Write expr -> (state, input, output @ [Expr.eval state expr])
 		| Assign (value, expr) -> (Expr.update value (Expr.eval state expr) state, input, output)
-		| Seq (st, st_) -> eval (eval config st) st_;;
+		| Seq (state1, state2) -> eval (eval config state1) state2;;
                                                          
   end
 
